@@ -33,7 +33,15 @@ class OpModel
 
     public function buscarPorId(int $id): ?array
     {
-        $sql = "SELECT id, numero_op, status, obs_aguardando 
+        $sql = "SELECT 
+                    id, 
+                    numero_op, 
+                    status, 
+                    obs_aguardando, 
+                    caixa_tipo, 
+                    caixa_numero, 
+                    localizacao, 
+                    obs_separacao 
                 FROM ops 
                 WHERE id = :id 
                 LIMIT 1";
@@ -43,6 +51,31 @@ class OpModel
 
         $op = $stmt->fetch();
         return $op ?: null;
+    }
+
+    public function listarMaquinas(): array
+    {
+        $sql = "SELECT id, nome FROM maquinas ORDER BY id ASC";
+        $stmt = $this->pdo->query($sql);
+        return $stmt->fetchAll();
+    }
+
+    public function listarMovimentacoesPorOp(int $opId): array
+    {
+        $sql = "SELECT 
+                    mov.tipo,
+                    mov.turno,
+                    mov.observacao,
+                    mov.data_hora,
+                    maq.nome AS maquina_nome
+                FROM movimentacoes mov
+                LEFT JOIN maquinas maq ON mov.maquina_id = maq.id
+                WHERE mov.op_id = :op_id
+                ORDER BY mov.data_hora DESC";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([':op_id' => $opId]);
+        return $stmt->fetchAll();
     }
 
     public function criar(string $numeroOp, ?string $obsAguardando, int $usuarioId): bool
@@ -83,5 +116,40 @@ class OpModel
             ':separada_por'  => $dados['separada_por'],
             ':id'            => $dados['id'],
         ]);
+    }
+
+    public function registrarMovimentacao(array $dados): bool
+    {
+        $novoStatus = $dados['tipo'] === 'retirada' ? 'retirada' : 'interrompida';
+
+        try {
+            $this->pdo->beginTransaction();
+
+            $sqlMov = "INSERT INTO movimentacoes (op_id, tipo, turno, maquina_id, observacao)
+                       VALUES (:op_id, :tipo, :turno, :maquina_id, :observacao)";
+            $stmtMov = $this->pdo->prepare($sqlMov);
+            $stmtMov->execute([
+                ':op_id'      => $dados['op_id'],
+                ':tipo'       => $dados['tipo'],
+                ':turno'      => $dados['turno'],
+                ':maquina_id' => $dados['maquina_id'],
+                ':observacao' => $dados['observacao'],
+            ]);
+
+            $sqlOp = "UPDATE ops SET status = :status WHERE id = :id";
+            $stmtOp = $this->pdo->prepare($sqlOp);
+            $stmtOp->execute([
+                ':status' => $novoStatus,
+                ':id'     => $dados['op_id'],
+            ]);
+
+            $this->pdo->commit();
+            return true;
+        } catch (Throwable $e) {
+            if ($this->pdo->inTransaction()) {
+                $this->pdo->rollBack();
+            }
+            throw $e;
+        }
     }
 }

@@ -34,6 +34,12 @@
         </div>
     <?php endif; ?>
 
+    <?php if (isset($_GET['movimentada'])): ?>
+        <div class="alert alert-success" role="alert">
+            Movimentação da OP registrada com sucesso!
+        </div>
+    <?php endif; ?>
+
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h4 class="mb-0">Ordens de Produção</h4>
 
@@ -71,7 +77,8 @@
                             'retirada'     => 'success',
                             'interrompida' => 'danger',
                         ];
-                        $podeSeparar = in_array($_SESSION['usuario_perfil'], ['admin', 'almoxarife'], true);
+                        $podeSeparar  = in_array($_SESSION['usuario_perfil'], ['admin', 'almoxarife'], true);
+                        $podeProduzir = in_array($_SESSION['usuario_perfil'], ['admin', 'producao'], true);
                         ?>
                         <?php foreach ($ops as $op): ?>
                             <?php $cor = $coresStatus[$op['status']] ?? 'secondary'; ?>
@@ -113,6 +120,14 @@
                                     <?php if ($op['status'] === 'aguardando' && $podeSeparar): ?>
                                         <a href="separar_op.php?id=<?= (int)$op['id'] ?>" class="btn btn-sm btn-outline-info text-dark">
                                             Separar
+                                        </a>
+                                    <?php elseif (in_array($op['status'], ['separada', 'interrompida'], true) && $podeProduzir): ?>
+                                        <a href="movimentar_op.php?id=<?= (int)$op['id'] ?>" class="btn btn-sm btn-outline-success">
+                                            Retirar
+                                        </a>
+                                    <?php elseif ($op['status'] === 'retirada' && $podeProduzir): ?>
+                                        <a href="movimentar_op.php?id=<?= (int)$op['id'] ?>" class="btn btn-sm btn-outline-danger">
+                                            Interromper
                                         </a>
                                     <?php else: ?>
                                         <span class="text-muted small">—</span>

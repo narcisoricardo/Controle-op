@@ -21,6 +21,16 @@ class OpController
         return $this->opModel->buscarPorId($id);
     }
 
+    public function listarMaquinas(): array
+    {
+        return $this->opModel->listarMaquinas();
+    }
+
+    public function listarHistorico(int $opId): array
+    {
+        return $this->opModel->listarMovimentacoesPorOp($opId);
+    }
+
     public function cadastrar(array $post, int $usuarioId): ?string
     {
         $numeroOp      = trim($post['numero_op'] ?? '');
@@ -75,6 +85,41 @@ class OpController
         ]);
 
         header('Location: index.php?separada=1');
+        exit;
+    }
+
+    public function movimentar(int $opId, array $post): ?string
+    {
+        $tipo       = $post['tipo'] ?? '';
+        $turno      = $post['turno'] ?? '';
+        $maquinaId  = (int) ($post['maquina_id'] ?? 0);
+        $observacao = trim($post['observacao'] ?? '');
+
+        if (!in_array($tipo, ['retirada', 'interrupcao'], true)) {
+            return 'Selecione um tipo de movimentação válido.';
+        }
+
+        if (!in_array($turno, ['primeiro', 'segundo', 'terceiro'], true)) {
+            return 'Selecione o turno da operação.';
+        }
+
+        if ($tipo === 'retirada' && $maquinaId <= 0) {
+            return 'Para retirar a OP, selecione a injetora de destino.';
+        }
+
+        if ($tipo === 'interrupcao' && $observacao === '') {
+            return 'Para interromper a OP, informe o motivo na observação.';
+        }
+
+        $this->opModel->registrarMovimentacao([
+            'op_id'      => $opId,
+            'tipo'       => $tipo,
+            'turno'      => $turno,
+            'maquina_id' => $maquinaId > 0 ? $maquinaId : null,
+            'observacao' => $observacao !== '' ? $observacao : null,
+        ]);
+
+        header('Location: index.php?movimentada=1');
         exit;
     }
 }
