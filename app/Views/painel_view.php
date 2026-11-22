@@ -28,6 +28,12 @@
         </div>
     <?php endif; ?>
 
+    <?php if (isset($_GET['separada'])): ?>
+        <div class="alert alert-info" role="alert">
+            Separação registrada com sucesso! OP pronta para retirada.
+        </div>
+    <?php endif; ?>
+
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h4 class="mb-0">Ordens de Produção</h4>
 
@@ -44,15 +50,16 @@
                         <th>Nº OP</th>
                         <th>Status</th>
                         <th>Caixa / Localização</th>
-                        <th>Observação</th>
+                        <th>Observações</th>
                         <th>Cadastrada por</th>
                         <th>Data Cadastro</th>
+                        <th class="text-end">Ações</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php if (empty($ops)): ?>
                         <tr>
-                            <td colspan="6" class="text-center text-muted py-4">
+                            <td colspan="7" class="text-center text-muted py-4">
                                 Nenhuma Ordem de Produção cadastrada até o momento.
                             </td>
                         </tr>
@@ -64,6 +71,7 @@
                             'retirada'     => 'success',
                             'interrompida' => 'danger',
                         ];
+                        $podeSeparar = in_array($_SESSION['usuario_perfil'], ['admin', 'almoxarife'], true);
                         ?>
                         <?php foreach ($ops as $op): ?>
                             <?php $cor = $coresStatus[$op['status']] ?? 'secondary'; ?>
@@ -81,13 +89,35 @@
                                         <?php if (!empty($op['localizacao'])): ?>
                                             <small class="text-muted d-block"><?= htmlspecialchars($op['localizacao'], ENT_QUOTES, 'UTF-8') ?></small>
                                         <?php endif; ?>
+                                        <?php if (!empty($op['anexo_link'])): ?>
+                                            <a href="<?= htmlspecialchars($op['anexo_link'], ENT_QUOTES, 'UTF-8') ?>" target="_blank" rel="noopener noreferrer" class="small">Ver anexo</a>
+                                        <?php endif; ?>
                                     <?php else: ?>
                                         <span class="text-muted">—</span>
                                     <?php endif; ?>
                                 </td>
-                                <td><?= htmlspecialchars($op['obs_aguardando'] ?? '—', ENT_QUOTES, 'UTF-8') ?></td>
+                                <td>
+                                    <?php if (!empty($op['obs_aguardando'])): ?>
+                                        <div><small class="text-muted">Cad:</small> <?= htmlspecialchars($op['obs_aguardando'], ENT_QUOTES, 'UTF-8') ?></div>
+                                    <?php endif; ?>
+                                    <?php if (!empty($op['obs_separacao'])): ?>
+                                        <div><small class="text-muted">Sep:</small> <?= htmlspecialchars($op['obs_separacao'], ENT_QUOTES, 'UTF-8') ?></div>
+                                    <?php endif; ?>
+                                    <?php if (empty($op['obs_aguardando']) && empty($op['obs_separacao'])): ?>
+                                        <span class="text-muted">—</span>
+                                    <?php endif; ?>
+                                </td>
                                 <td><?= htmlspecialchars($op['cadastrada_por_nome'], ENT_QUOTES, 'UTF-8') ?></td>
                                 <td><?= date('d/m/Y H:i', strtotime($op['data_cadastro'])) ?></td>
+                                <td class="text-end">
+                                    <?php if ($op['status'] === 'aguardando' && $podeSeparar): ?>
+                                        <a href="separar_op.php?id=<?= (int)$op['id'] ?>" class="btn btn-sm btn-outline-info text-dark">
+                                            Separar
+                                        </a>
+                                    <?php else: ?>
+                                        <span class="text-muted small">—</span>
+                                    <?php endif; ?>
+                                </td>
                             </tr>
                         <?php endforeach; ?>
                     <?php endif; ?>
