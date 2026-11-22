@@ -1,8 +1,12 @@
 <?php
 
 require_once __DIR__ . '/../app/controle_acesso.php';
-
-// Bloqueia o acesso se não estiver logado
 exigirLogin();
+
+require_once __DIR__ . '/../config/conexao.php';
+require_once __DIR__ . '/../app/Controllers/OpController.php';
+
+$opController = new OpController($pdo);
+$ops = $opController->listar();
 
 require __DIR__ . '/../app/Views/painel_view.php';
