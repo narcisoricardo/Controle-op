@@ -1,0 +1,148 @@
+/* =========================================
+   Identidade Visual Clara e Moderna - Controle de OP
+   ========================================= */
+
+:root {
+    --cor-fundo: #eef2f6;
+    --cor-azul-principal: #2563eb;
+    --cor-azul-escuro: #1d4ed8;
+    --cor-texto: #1e293b;
+    --cor-borda: #dbe2ea;
+}
+
+body {
+    background-color: var(--cor-fundo) !important;
+    color: var(--cor-texto);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+/* Barra superior clara e vibrante */
+.navbar-industrial {
+    background: linear-gradient(135deg, var(--cor-azul-escuro), var(--cor-azul-principal)) !important;
+    box-shadow: 0 3px 10px rgba(37, 99, 235, 0.25);
+}
+
+.navbar-industrial .navbar-brand {
+    color: #ffffff !important;
+    font-weight: 700;
+    font-size: 1.2rem;
+    letter-spacing: 0.3px;
+}
+
+/* Cards brancos com topo azul de destaque */
+.card-sistema {
+    background-color: #ffffff;
+    border: 1px solid var(--cor-borda);
+    border-top: 4px solid var(--cor-azul-principal);
+    border-radius: 12px;
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06);
+    overflow: hidden;
+}
+
+/* Tabela de Ordens de Produção */
+.tabela-ops thead th {
+    background-color: #f1f5f9;
+    color: #334155;
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 2px solid var(--cor-borda);
+    padding: 0.95rem 1rem;
+}
+
+.tabela-ops tbody td {
+    padding: 0.95rem 1rem;
+    border-bottom: 1px solid #e2e8f0;
+    background-color: #ffffff;
+}
+
+.tabela-ops tbody tr:hover td {
+    background-color: #f8fafc;
+}
+
+.numero-op {
+    font-weight: 800;
+    font-size: 1.05rem;
+    color: var(--cor-azul-escuro);
+}
+
+/* Badges de Status vibrantes */
+.badge-status {
+    display: inline-block;
+    padding: 0.4em 0.85em;
+    font-size: 0.74rem;
+    font-weight: 700;
+    border-radius: 50rem;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.status-aguardando {
+    background-color: #fef3c7;
+    color: #b45309;
+    border: 1px solid #f59e0b;
+}
+
+.status-separada {
+    background-color: #dbeafe;
+    color: #1d4ed8;
+    border: 1px solid #60a5fa;
+}
+
+.status-retirada {
+    background-color: #d1fae5;
+    color: #047857;
+    border: 1px solid #34d399;
+}
+
+.status-interrompida {
+    background-color: #fee2e2;
+    color: #b91c1c;
+    border: 1px solid #f87171;
+}
+
+.status-produzida {
+    background-color: #e2e8f0;
+    color: #334155;
+    border: 1px solid #94a3b8;
+}
+
+/* Tela de Login */
+.tela-login {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    background: linear-gradient(135deg, #e0e7ff 0%, #f1f5f9 100%) !important;
+}
+
+.card-login {
+    width: 100%;
+    max-width: 400px;
+}
+
+/* Cards de resumo (KPIs) */
+.card-kpi {
+    background-color: #ffffff;
+    border: 1px solid var(--cor-borda);
+    border-radius: 10px;
+    padding: 0.85rem 1rem;
+    box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04);
+}
+
+.card-kpi .kpi-titulo {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    color: #64748b;
+}
+
+.card-kpi .kpi-valor {
+    font-size: 1.5rem;
+    font-weight: 800;
+    line-height: 1.2;
+    margin-top: 0.2rem;
+}

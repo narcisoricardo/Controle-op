@@ -1,7 +1,6 @@
 <?php
 
 require_once __DIR__ . '/../app/controle_acesso.php';
-// Apenas Admin e Almoxarife podem registrar separação
 exigirPerfil(['admin', 'almoxarife']);
 
 require_once __DIR__ . '/../config/conexao.php';
@@ -19,7 +18,9 @@ if (!$op || $op['status'] !== 'aguardando') {
 $erro = null;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $erro = $opController->separar($opId, $_POST, (int)$_SESSION['usuario_id']);
+    $erro = $opController->separar($opId, $_POST, $_FILES, (int)$_SESSION['usuario_id']);
 }
+
+$operadores = $opController->listarOperadores();
 
 require __DIR__ . '/../app/Views/separar_op_view.php';

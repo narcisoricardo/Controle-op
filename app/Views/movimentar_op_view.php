@@ -5,20 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Movimentar OP - Controle de OP</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/estilo.css" rel="stylesheet">
 </head>
-<body class="bg-light">
+<body>
 
-<nav class="navbar navbar-dark bg-dark px-4">
-    <a href="index.php" class="navbar-brand mb-0 h1">Controle de OP</a>
+<nav class="navbar navbar-dark navbar-industrial px-4 py-2">
+    <a href="index.php" class="navbar-brand mb-0">Controle de OP</a>
     <a href="index.php" class="btn btn-outline-light btn-sm">Voltar ao Painel</a>
 </nav>
 
-<div class="container mt-4">
+<div class="container mt-4 mb-5">
     <div class="row justify-content-center">
         <div class="col-md-6">
-            <div class="card shadow-sm mb-4">
+            <div class="card-sistema mb-4">
                 <div class="card-body p-4">
-                    <h4 class="mb-1">Movimentar OP #<?= htmlspecialchars($op['numero_op'], ENT_QUOTES, 'UTF-8') ?></h4>
+                    <h4 class="fw-bold mb-1">Movimentar OP #<?= htmlspecialchars($op['numero_op'], ENT_QUOTES, 'UTF-8') ?></h4>
                     <p class="text-muted small mb-3">
                         Localização atual:
                         <strong>
@@ -35,10 +36,29 @@
                     <?php endif; ?>
 
                     <form method="POST" action="movimentar_op.php?id=<?= (int)$op['id'] ?>">
+                        <div class="mb-3">
+                            <label for="operador_nome" class="form-label">Nome do Operador</label>
+                            <input
+                                type="text"
+                                class="form-control"
+                                id="operador_nome"
+                                name="operador_nome"
+                                list="lista_operadores"
+                                placeholder="Quem está retirando ou interrompendo..."
+                                required
+                                autofocus
+                            >
+                            <datalist id="lista_operadores">
+                                <?php foreach ($operadores as $nomeOp): ?>
+                                    <option value="<?= htmlspecialchars($nomeOp, ENT_QUOTES, 'UTF-8') ?>">
+                                <?php endforeach; ?>
+                            </datalist>
+                        </div>
+
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label for="tipo" class="form-label">Ação</label>
-                                <select class="form-select" id="tipo" name="tipo" required autofocus>
+                                <select class="form-select" id="tipo" name="tipo" required>
                                     <?php if (in_array($op['status'], ['separada', 'interrompida'], true)): ?>
                                         <option value="retirada">Retirar para Produção</option>
                                     <?php endif; ?>
@@ -85,11 +105,11 @@
             </div>
 
             <?php if (!empty($historico)): ?>
-                <div class="card shadow-sm">
-                    <div class="card-header bg-white fw-semibold">Histórico desta OP</div>
+                <div class="card-sistema">
+                    <div class="card-header bg-white fw-semibold py-3 px-4 border-bottom">Histórico desta OP</div>
                     <ul class="list-group list-group-flush">
                         <?php foreach ($historico as $h): ?>
-                            <li class="list-group-item small">
+                            <li class="list-group-item small px-4 py-3">
                                 <div class="d-flex justify-content-between">
                                     <strong class="text-uppercase">
                                         <?= htmlspecialchars($h['tipo'], ENT_QUOTES, 'UTF-8') ?>
@@ -97,6 +117,9 @@
                                     </strong>
                                     <span class="text-muted"><?= date('d/m/Y H:i', strtotime($h['data_hora'])) ?></span>
                                 </div>
+                                <?php if (!empty($h['operador_nome'])): ?>
+                                    <div>Operador: <strong><?= htmlspecialchars($h['operador_nome'], ENT_QUOTES, 'UTF-8') ?></strong></div>
+                                <?php endif; ?>
                                 <?php if (!empty($h['maquina_nome'])): ?>
                                     <div>Máquina: <?= htmlspecialchars($h['maquina_nome'], ENT_QUOTES, 'UTF-8') ?></div>
                                 <?php endif; ?>

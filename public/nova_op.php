@@ -1,7 +1,7 @@
 <?php
 
 require_once __DIR__ . '/../app/controle_acesso.php';
-exigirPerfil(['admin', 'producao']);
+exigirPerfil(['admin']);
 
 require_once __DIR__ . '/../config/conexao.php';
 require_once __DIR__ . '/../app/Controllers/OpController.php';
