@@ -7,34 +7,43 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="css/estilo.css" rel="stylesheet">
 </head>
-<body class="tela-login">
+<body>
 
-<div class="card-sistema card-login p-4">
-    <div class="text-center mb-4">
-        <h4 class="fw-bold mb-1">Controle de OP</h4>
-        <p class="text-muted small mb-0">Injeção Plástica • Almoxarifado e Produção</p>
-    </div>
+<header class="navbar navbar-dark navbar-industrial px-4 py-2">
+    <h1 class="navbar-brand fs-5 mb-0">Controle de OP</h1>
+</header>
 
-    <?php if (!empty($erro)): ?>
-        <div class="alert alert-danger py-2">
-            <?= htmlspecialchars($erro, ENT_QUOTES, 'UTF-8') ?>
-        </div>
-    <?php endif; ?>
+<main class="container mt-5">
+    <section class="row justify-content-center">
+        <article class="col-md-5 bg-white p-4 rounded border">
+            <h2 class="h4 fw-bold mb-3">Acesso ao Sistema</h2>
 
-    <form method="POST" action="login.php">
-        <div class="mb-3">
-            <label for="login" class="form-label">Usuário</label>
-            <input type="text" class="form-control" id="login" name="login" required autofocus>
-        </div>
+            <?php if (!empty($erro)): ?>
+                <p class="alert alert-danger py-2">
+                    <strong>Erro:</strong> <?= htmlspecialchars($erro, ENT_QUOTES, 'UTF-8') ?>
+                </p>
+            <?php endif; ?>
 
-        <div class="mb-4">
-            <label for="senha" class="form-label">Senha</label>
-            <input type="password" class="form-control" id="senha" name="senha" required>
-        </div>
+            <form method="POST" action="login.php">
+                <p class="mb-3">
+                    <label for="login" class="form-label">Usuário</label>
+                    <input type="text" class="form-control" id="login" name="login" placeholder="Digite seu login" required autofocus>
+                </p>
 
-        <button type="submit" class="btn btn-primary w-100">Entrar</button>
-    </form>
-</div>
+                <p class="mb-4">
+                    <label for="senha" class="form-label">Senha</label>
+                    <input type="password" class="form-control" id="senha" name="senha" placeholder="Digite sua senha" required>
+                </p>
+
+                <button type="submit" class="btn btn-primary w-100">Entrar</button>
+            </form>
+        </article>
+    </section>
+</main>
+
+<footer class="text-center text-muted small mt-5">
+    <p>Sistema de Controle de Ordens de Produção</p>
+</footer>
 
 </body>
 </html>

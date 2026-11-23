@@ -9,45 +9,45 @@
 </head>
 <body>
 
-<nav class="navbar navbar-dark navbar-industrial px-4 py-2">
-    <a href="index.php" class="navbar-brand mb-0">Controle de OP</a>
+<header class="navbar navbar-dark navbar-industrial px-4 py-2">
+    <a href="index.php" class="navbar-brand fs-5 mb-0">Controle de OP</a>
     <a href="index.php" class="btn btn-outline-light btn-sm">Voltar ao Painel</a>
-</nav>
+</header>
 
-<div class="container mt-4">
-    <div class="row justify-content-center">
-        <div class="col-md-5">
-            <div class="card-sistema">
-                <div class="card-body p-4">
-                    <h4 class="fw-bold mb-3">Cadastrar Nova OP</h4>
+<main class="container mt-4">
+    <section class="row justify-content-center">
+        <article class="col-md-6 card-sistema p-4">
+            <h1 class="h4 fw-bold mb-3">Cadastrar Nova Ordem de Produção</h1>
 
-                    <?php if (!empty($erro)): ?>
-                        <div class="alert alert-danger py-2">
-                            <?= htmlspecialchars($erro, ENT_QUOTES, 'UTF-8') ?>
-                        </div>
-                    <?php endif; ?>
+            <?php if (!empty($erro)): ?>
+                <p class="alert alert-danger py-2">
+                    <strong>Erro:</strong> <?= htmlspecialchars($erro, ENT_QUOTES, 'UTF-8') ?>
+                </p>
+            <?php endif; ?>
 
-                    <form method="POST" action="nova_op.php">
-                        <div class="mb-3">
-                            <label for="numero_op" class="form-label">Número da OP</label>
-                            <input type="text" class="form-control" id="numero_op" name="numero_op" placeholder="Ex: 10452" required autofocus>
-                        </div>
+            <form method="POST" action="nova_op.php">
+                <p class="mb-3">
+                    <label for="numero_op" class="form-label">Número da OP</label>
+                    <input type="text" class="form-control" id="numero_op" name="numero_op" placeholder="Ex: 008" required autofocus>
+                </p>
 
-                        <div class="mb-4">
-                            <label for="obs_aguardando" class="form-label">Observação (opcional)</label>
-                            <textarea class="form-control" id="obs_aguardando" name="obs_aguardando" rows="3" placeholder="Ex: Urgente, prioridade turno 1..."></textarea>
-                        </div>
+                <p class="mb-4">
+                    <label for="obs_aguardando" class="form-label">Observação (opcional)</label>
+                    <textarea class="form-control" id="obs_aguardando" name="obs_aguardando" rows="3" placeholder="Ex: Prioridade alta, material urgente..."></textarea>
+                </p>
 
-                        <div class="d-flex justify-content-end gap-2">
-                            <a href="index.php" class="btn btn-secondary">Cancelar</a>
-                            <button type="submit" class="btn btn-primary">Salvar OP</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+                <p class="text-end mb-0">
+                    <a href="index.php" class="btn btn-secondary me-1">Cancelar</a>
+                    <button type="submit" class="btn btn-primary">Salvar OP</button>
+                </p>
+            </form>
+        </article>
+    </section>
+</main>
+
+<footer class="text-center text-muted small mt-5">
+    <p>Sistema de Controle de Ordens de Produção</p>
+</footer>
 
 </body>
 </html>

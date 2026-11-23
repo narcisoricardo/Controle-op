@@ -9,131 +9,121 @@
 </head>
 <body>
 
-<nav class="navbar navbar-dark navbar-industrial px-4 py-2">
-    <a href="index.php" class="navbar-brand mb-0">Controle de OP</a>
+<header class="navbar navbar-dark navbar-industrial px-4 py-2">
+    <a href="index.php" class="navbar-brand fs-5 mb-0">Controle de OP</a>
     <a href="index.php" class="btn btn-outline-light btn-sm">Voltar ao Painel</a>
-</nav>
+</header>
 
-<div class="container mt-4 mb-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card-sistema mb-4">
-                <div class="card-body p-4">
-                    <h4 class="fw-bold mb-1">Movimentar OP #<?= htmlspecialchars($op['numero_op'], ENT_QUOTES, 'UTF-8') ?></h4>
-                    <p class="text-muted small mb-3">
-                        Localização atual:
-                        <strong>
-                            Caixa <?= htmlspecialchars(ucfirst($op['caixa_tipo'] ?? ''), ENT_QUOTES, 'UTF-8') ?>
-                            nº <?= (int)($op['caixa_numero'] ?? 0) ?>
-                            (<?= htmlspecialchars($op['localizacao'] ?? '', ENT_QUOTES, 'UTF-8') ?>)
-                        </strong>
+<main class="container mt-4 mb-5">
+    <section class="row justify-content-center">
+        <article class="col-md-6">
+            <section class="card-sistema p-4 mb-4">
+                <h1 class="h4 fw-bold mb-1">Movimentar OP #<?= htmlspecialchars($op['numero_op'], ENT_QUOTES, 'UTF-8') ?></h1>
+                <p class="text-muted small mb-3">
+                    Localização atual:
+                    <strong>
+                        Caixa <?= htmlspecialchars(ucfirst($op['caixa_tipo'] ?? ''), ENT_QUOTES, 'UTF-8') ?>
+                        nº <?= (int)($op['caixa_numero'] ?? 0) ?>
+                        (<?= htmlspecialchars($op['localizacao'] ?? '', ENT_QUOTES, 'UTF-8') ?>)
+                    </strong>
+                </p>
+
+                <?php if (!empty($erro)): ?>
+                    <p class="alert alert-danger py-2">
+                        <strong>Erro:</strong> <?= htmlspecialchars($erro, ENT_QUOTES, 'UTF-8') ?>
+                    </p>
+                <?php endif; ?>
+
+                <form method="POST" action="movimentar_op.php?id=<?= (int)$op['id'] ?>">
+                    <p class="mb-3">
+                        <label for="operador_nome" class="form-label">Nome do Operador</label>
+                        <input type="text" class="form-control" id="operador_nome" name="operador_nome" list="lista_operadores" placeholder="Quem está retirando ou interrompendo..." required autofocus>
+                        <datalist id="lista_operadores">
+                            <?php foreach ($operadores as $nomeOp): ?>
+                                <option value="<?= htmlspecialchars($nomeOp, ENT_QUOTES, 'UTF-8') ?>">
+                            <?php endforeach; ?>
+                        </datalist>
                     </p>
 
-                    <?php if (!empty($erro)): ?>
-                        <div class="alert alert-danger py-2">
-                            <?= htmlspecialchars($erro, ENT_QUOTES, 'UTF-8') ?>
-                        </div>
-                    <?php endif; ?>
+                    <p class="mb-3">
+                        <label for="tipo" class="form-label">Ação</label>
+                        <select class="form-select" id="tipo" name="tipo" required>
+                            <?php if (in_array($op['status'], ['separada', 'interrompida'], true)): ?>
+                                <option value="retirada">Retirar para Produção</option>
+                            <?php endif; ?>
+                            <?php if ($op['status'] === 'retirada'): ?>
+                                <option value="interrupcao">Interromper Produção</option>
+                            <?php endif; ?>
+                        </select>
+                    </p>
 
-                    <form method="POST" action="movimentar_op.php?id=<?= (int)$op['id'] ?>">
-                        <div class="mb-3">
-                            <label for="operador_nome" class="form-label">Nome do Operador</label>
-                            <input
-                                type="text"
-                                class="form-control"
-                                id="operador_nome"
-                                name="operador_nome"
-                                list="lista_operadores"
-                                placeholder="Quem está retirando ou interrompendo..."
-                                required
-                                autofocus
-                            >
-                            <datalist id="lista_operadores">
-                                <?php foreach ($operadores as $nomeOp): ?>
-                                    <option value="<?= htmlspecialchars($nomeOp, ENT_QUOTES, 'UTF-8') ?>">
-                                <?php endforeach; ?>
-                            </datalist>
-                        </div>
+                    <p class="mb-3">
+                        <label for="turno" class="form-label">Turno</label>
+                        <select class="form-select" id="turno" name="turno" required>
+                            <option value="">Selecione...</option>
+                            <option value="primeiro">1º Turno</option>
+                            <option value="segundo">2º Turno</option>
+                            <option value="terceiro">3º Turno</option>
+                        </select>
+                    </p>
 
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="tipo" class="form-label">Ação</label>
-                                <select class="form-select" id="tipo" name="tipo" required>
-                                    <?php if (in_array($op['status'], ['separada', 'interrompida'], true)): ?>
-                                        <option value="retirada">Retirar para Produção</option>
-                                    <?php endif; ?>
-                                    <?php if ($op['status'] === 'retirada'): ?>
-                                        <option value="interrupcao">Interromper Produção</option>
-                                    <?php endif; ?>
-                                </select>
-                            </div>
+                    <p class="mb-3">
+                        <label for="maquina_id" class="form-label">Injetora</label>
+                        <select class="form-select" id="maquina_id" name="maquina_id">
+                            <option value="">Selecione a injetora...</option>
+                            <?php foreach ($maquinas as $m): ?>
+                                <option value="<?= (int)$m['id'] ?>">
+                                    <?= htmlspecialchars($m['nome'], ENT_QUOTES, 'UTF-8') ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </p>
 
-                            <div class="col-md-6 mb-3">
-                                <label for="turno" class="form-label">Turno</label>
-                                <select class="form-select" id="turno" name="turno" required>
-                                    <option value="">Selecione...</option>
-                                    <option value="primeiro">1º Turno</option>
-                                    <option value="segundo">2º Turno</option>
-                                    <option value="terceiro">3º Turno</option>
-                                </select>
-                            </div>
-                        </div>
+                    <p class="mb-4">
+                        <label for="observacao" class="form-label">Observação / Motivo</label>
+                        <textarea class="form-control" id="observacao" name="observacao" rows="2" placeholder="Obrigatório em caso de interrupção..."></textarea>
+                    </p>
 
-                        <div class="mb-3">
-                            <label for="maquina_id" class="form-label">Injetora</label>
-                            <select class="form-select" id="maquina_id" name="maquina_id">
-                                <option value="">Selecione a injetora...</option>
-                                <?php foreach ($maquinas as $m): ?>
-                                    <option value="<?= (int)$m['id'] ?>">
-                                        <?= htmlspecialchars($m['nome'], ENT_QUOTES, 'UTF-8') ?>
-                                    </option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-
-                        <div class="mb-4">
-                            <label for="observacao" class="form-label">Observação / Motivo</label>
-                            <textarea class="form-control" id="observacao" name="observacao" rows="2" placeholder="Obrigatório em caso de interrupção..."></textarea>
-                        </div>
-
-                        <div class="d-flex justify-content-end gap-2">
-                            <a href="index.php" class="btn btn-secondary">Cancelar</a>
-                            <button type="submit" class="btn btn-success">Registrar Movimentação</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
+                    <p class="text-end mb-0">
+                        <a href="index.php" class="btn btn-secondary me-1">Cancelar</a>
+                        <button type="submit" class="btn btn-success">Registrar Movimentação</button>
+                    </p>
+                </form>
+            </section>
 
             <?php if (!empty($historico)): ?>
-                <div class="card-sistema">
-                    <div class="card-header bg-white fw-semibold py-3 px-4 border-bottom">Histórico desta OP</div>
+                <section class="card-sistema p-4">
+                    <h2 class="h6 fw-bold mb-3">Histórico desta OP</h2>
                     <ul class="list-group list-group-flush">
                         <?php foreach ($historico as $h): ?>
-                            <li class="list-group-item small px-4 py-3">
-                                <div class="d-flex justify-content-between">
-                                    <strong class="text-uppercase">
-                                        <?= htmlspecialchars($h['tipo'], ENT_QUOTES, 'UTF-8') ?>
-                                        (<?= htmlspecialchars($h['turno'], ENT_QUOTES, 'UTF-8') ?> turno)
-                                    </strong>
-                                    <span class="text-muted"><?= date('d/m/Y H:i', strtotime($h['data_hora'])) ?></span>
-                                </div>
+                            <li class="list-group-item small px-0">
+                                <strong class="text-uppercase">
+                                    <?= htmlspecialchars($h['tipo'], ENT_QUOTES, 'UTF-8') ?>
+                                    (<?= htmlspecialchars($h['turno'], ENT_QUOTES, 'UTF-8') ?> turno)
+                                </strong>
+                                — <span class="text-muted"><?= date('d/m/Y H:i', strtotime($h['data_hora'])) ?></span>
+
                                 <?php if (!empty($h['operador_nome'])): ?>
-                                    <div>Operador: <strong><?= htmlspecialchars($h['operador_nome'], ENT_QUOTES, 'UTF-8') ?></strong></div>
+                                    <br>Operador: <strong><?= htmlspecialchars($h['operador_nome'], ENT_QUOTES, 'UTF-8') ?></strong>
                                 <?php endif; ?>
                                 <?php if (!empty($h['maquina_nome'])): ?>
-                                    <div>Máquina: <?= htmlspecialchars($h['maquina_nome'], ENT_QUOTES, 'UTF-8') ?></div>
+                                    <br>Máquina: <?= htmlspecialchars($h['maquina_nome'], ENT_QUOTES, 'UTF-8') ?>
                                 <?php endif; ?>
                                 <?php if (!empty($h['observacao'])): ?>
-                                    <div class="text-muted">Obs: <?= htmlspecialchars($h['observacao'], ENT_QUOTES, 'UTF-8') ?></div>
+                                    <br><span class="text-muted">Obs: <?= htmlspecialchars($h['observacao'], ENT_QUOTES, 'UTF-8') ?></span>
                                 <?php endif; ?>
                             </li>
                         <?php endforeach; ?>
                     </ul>
-                </div>
+                </section>
             <?php endif; ?>
-        </div>
-    </div>
-</div>
+        </article>
+    </section>
+</main>
+
+<footer class="text-center text-muted small mb-4">
+    <p>Sistema de Controle de Ordens de Produção</p>
+</footer>
 
 </body>
 </html>
