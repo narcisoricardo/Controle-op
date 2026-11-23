@@ -62,8 +62,11 @@
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h4 class="mb-0 fw-bold">Ordens de Produção</h4>
 
-       <?php if ($_SESSION['usuario_perfil'] === 'admin'): ?>
-            <a href="nova_op.php" class="btn btn-primary">+ Nova OP</a>
+        <?php if ($_SESSION['usuario_perfil'] === 'admin'): ?>
+            <div class="d-flex gap-2">
+                <a href="usuarios.php" class="btn btn-outline-primary">Usuários</a>
+                <a href="nova_op.php" class="btn btn-primary">+ Nova OP</a>
+            </div>
         <?php endif; ?>
     </div>
 
